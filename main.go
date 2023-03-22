@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -96,10 +97,16 @@ func conv(srcFile, dstFile string, log func(...any)) error {
 	return filter(r, w, log)
 }
 
+var (
+	flagTarget = flag.String("target", "README.md", "Rewrite filename")
+	flagTemp   = flag.String("temporary", "README.tmp", "Temporary filename")
+	flagBackup = flag.String("backup", "README.md~", "Backup filename")
+)
+
 func mains() error {
-	const md = "README.md"
-	const tmp = "README.tmp"
-	const bak = "README.md~"
+	md := *flagTarget
+	tmp := *flagTemp
+	bak := *flagBackup
 
 	fmt.Fprintln(os.Stderr, "Convert from", md, "to", tmp)
 	if err := conv(md, tmp, func(s ...any) { fmt.Fprintln(os.Stderr, s...) }); err != nil {
@@ -117,6 +124,7 @@ func mains() error {
 }
 
 func main() {
+	flag.Parse()
 	if err := mains(); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
