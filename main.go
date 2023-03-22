@@ -38,19 +38,7 @@ func copyWithDetab(r io.Reader, newline string, w io.Writer) error {
 	return sc.Err()
 }
 
-func conv(srcFile, dstFile string, log func(...any)) error {
-	r, err := os.Open(srcFile)
-	if err != nil {
-		return err
-	}
-	defer r.Close()
-
-	w, err := os.Create(dstFile)
-	if err != nil {
-		return err
-	}
-	defer w.Close()
-
+func filter(r io.Reader, w io.Writer, log func(...any)) error {
 	bw := bufio.NewWriter(w)
 	defer bw.Flush()
 
@@ -90,6 +78,22 @@ func conv(srcFile, dstFile string, log func(...any)) error {
 			return nil
 		}
 	}
+}
+
+func conv(srcFile, dstFile string, log func(...any)) error {
+	r, err := os.Open(srcFile)
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+
+	w, err := os.Create(dstFile)
+	if err != nil {
+		return err
+	}
+	defer w.Close()
+
+	return filter(r, w, log)
 }
 
 func mains() error {
