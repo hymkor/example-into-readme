@@ -8,17 +8,23 @@ import (
 	"strings"
 )
 
-func readUntilQQQ(sc *bufio.Scanner, w io.Writer) error {
-	for sc.Scan() {
-		fmt.Fprintln(w, sc.Text())
-		if strings.HasPrefix(sc.Text(), "```") {
+func readUntilQQQ(br *bufio.Reader, w io.Writer) error {
+	for {
+		line, err := br.ReadString('\n')
+		io.WriteString(w, line)
+		if strings.HasPrefix(line, "```") {
+			return nil
+		}
+		if err != nil {
+			if err != io.EOF {
+				return err
+			}
 			return nil
 		}
 	}
-	return sc.Err()
 }
 
-func copyWithDetab(r io.Reader, w io.Writer) error {
+func copyWithDetab(r io.Reader, newline string, w io.Writer) error {
 	sc := bufio.NewScanner(r)
 	for sc.Scan() {
 		text := sc.Text()
@@ -26,7 +32,8 @@ func copyWithDetab(r io.Reader, w io.Writer) error {
 			io.WriteString(w, "    ")
 			text = text[1:]
 		}
-		fmt.Fprintln(w, text)
+		io.WriteString(w, text)
+		io.WriteString(w, newline)
 	}
 	return sc.Err()
 }
@@ -47,10 +54,10 @@ func conv(srcFile, dstFile string, log func(...any)) error {
 	bw := bufio.NewWriter(w)
 	defer bw.Flush()
 
-	sc := bufio.NewScanner(r)
-	for sc.Scan() {
-		text := sc.Text()
-		fmt.Fprintln(bw, text)
+	br := bufio.NewReader(r)
+	for {
+		text, errRead := br.ReadString('\n')
+		io.WriteString(bw, text)
 		if strings.HasPrefix(text, "```") {
 			filename := strings.TrimSpace(text[3:])
 			qr, err := os.Open(filename)
@@ -58,21 +65,31 @@ func conv(srcFile, dstFile string, log func(...any)) error {
 				if !os.IsNotExist(err) {
 					return err
 				}
-				if err = readUntilQQQ(sc, bw); err != nil {
+				if err = readUntilQQQ(br, bw); err != nil {
 					return err
 				}
 				continue
 			}
-			copyWithDetab(qr, bw)
+			newline := "\n"
+			if strings.HasSuffix(text, "\r\n") {
+				newline = "\r\n"
+			}
+			copyWithDetab(qr, newline, bw)
 			qr.Close()
-			if err := readUntilQQQ(sc, io.Discard); err != nil {
+			if err := readUntilQQQ(br, io.Discard); err != nil {
 				return err
 			}
-			bw.WriteString("```\n")
+			bw.WriteString("```")
+			bw.WriteString(newline)
 			log("Include", filename)
 		}
+		if errRead != nil {
+			if errRead != io.EOF {
+				return errRead
+			}
+			return nil
+		}
 	}
-	return sc.Err()
 }
 
 func mains() error {
