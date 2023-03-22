@@ -7,8 +7,8 @@ import (
 
 func TestFilterLF(t *testing.T) {
 	var output strings.Builder
-	source := strings.NewReader("foo\n```go.mod\n```\n")
-	expect := "foo\n```go.mod\nmodule github.com/hymkor/example-into-readme\n\ngo 1.20\n```\n"
+	source := strings.NewReader("foo\n```testdata.txt\n```\n")
+	expect := "foo\n```testdata.txt\nhogehoge\n```\n"
 
 	err := filter(source, &output, func(...any) {})
 	if err != nil {
@@ -22,8 +22,8 @@ func TestFilterLF(t *testing.T) {
 
 func TestFilterCRLF(t *testing.T) {
 	var output strings.Builder
-	source := strings.NewReader("foo\r\n```go.mod\r\n```\r\n")
-	expect := "foo\r\n```go.mod\r\nmodule github.com/hymkor/example-into-readme\r\n\r\ngo 1.20\r\n```\r\n"
+	source := strings.NewReader("foo\r\n```testdata.txt\r\n```\r\n")
+	expect := "foo\r\n```testdata.txt\r\nhogehoge\r\n```\r\n"
 
 	err := filter(source, &output, func(...any) {})
 	if err != nil {

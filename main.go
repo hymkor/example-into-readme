@@ -2,12 +2,46 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"flag"
 	"fmt"
 	"io"
 	"os"
 	"strings"
+
+	"golang.org/x/text/transform"
 )
+
+type goFilter struct {
+	pass bool
+}
+
+func (g *goFilter) Reset() {}
+
+func (g *goFilter) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
+	if g.pass {
+		n := copy(dst, src)
+		return n, n, nil
+	}
+	for {
+		newlinePos := bytes.IndexByte(src, '\n')
+		if newlinePos < 0 && !atEOF {
+			return nDst, nSrc, transform.ErrShortSrc
+		}
+		if bytes.HasPrefix(src, []byte("package")) {
+			if len(dst) < newlinePos+1 {
+				return nDst, nSrc, transform.ErrShortDst
+			}
+			n := copy(dst, src)
+			nSrc += n
+			nDst += n
+			g.pass = true
+			return
+		}
+		nSrc += newlinePos + 1
+		src = src[newlinePos+1:]
+	}
+}
 
 func readUntilQQQ(br *bufio.Reader, w io.Writer) error {
 	for {
@@ -63,7 +97,12 @@ func filter(r io.Reader, w io.Writer, log func(...any)) error {
 			if strings.HasSuffix(text, "\r\n") {
 				newline = "\r\n"
 			}
-			copyWithDetab(qr, newline, bw)
+			if strings.HasSuffix(filename, ".go") {
+				copyWithDetab(transform.NewReader(qr, &goFilter{}), newline, bw)
+			} else {
+				copyWithDetab(qr, newline, bw)
+			}
+
 			qr.Close()
 			if err := readUntilQQQ(br, io.Discard); err != nil {
 				return err
