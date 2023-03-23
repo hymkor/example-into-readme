@@ -28,3 +28,21 @@ Rename README.tmp to README.md
 ```
 
 When `*.go` is given as a filename, skip lines until `package` is found to ignore `//go:build`.
+
+Install
+-------
+
+Download the binary package from [Releases](https://github.com/hymkor/example-into-readme/releases) and extract the executable.
+
+### for scoop-installer
+
+```
+scoop install https://raw.githubusercontent.com/hymkor/example-into-readme/master/example-into-readme.json
+```
+
+or
+
+```
+scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
+scoop install example-into-readme
+```
