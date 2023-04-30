@@ -29,6 +29,12 @@ Rename README.tmp to README.md
 
 When `*.go` is given as a filename, skip lines until `package` is found to ignore `//go:build`.
 
+Quoting the output of the command
+-----
+
+    ```COMMANDNAME ARGS ... |
+    ```
+
 Install
 -------
 
