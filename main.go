@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -75,7 +76,7 @@ func copyWithDetab(r io.Reader, newline string, w io.Writer) error {
 }
 
 func open(s string) (io.ReadCloser, error) {
-	if s[len(s)-1] == '|' {
+	if len(s) > 0 && s[len(s)-1] == '|' {
 		args := strings.Fields(s[:len(s)-1])
 		cmd := exec.Command(args[0], args[1:]...)
 		fd, err := cmd.StdoutPipe()
@@ -158,6 +159,13 @@ var (
 )
 
 func mains() error {
+	const lockKey = "EXAMPLEINTOREADME"
+	_, ok := os.LookupEnv(lockKey)
+	if ok {
+		return errors.New("Locked")
+	}
+	os.Setenv(lockKey, "RUNNING")
+
 	md := *flagTarget
 	tmp := *flagTemp
 	bak := *flagBackup
