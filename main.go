@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"strings"
 
 	"golang.org/x/text/transform"
@@ -73,6 +74,20 @@ func copyWithDetab(r io.Reader, newline string, w io.Writer) error {
 	return sc.Err()
 }
 
+func open(s string) (io.ReadCloser, error) {
+	if s[len(s)-1] == '|' {
+		args := strings.Fields(s[:len(s)-1])
+		cmd := exec.Command(args[0], args[1:]...)
+		fd, err := cmd.StdoutPipe()
+		if err != nil {
+			return nil, err
+		}
+		return fd, cmd.Start()
+	} else {
+		return os.Open(s)
+	}
+}
+
 func filter(r io.Reader, w io.Writer, log func(...any)) error {
 	bw := bufio.NewWriter(w)
 	defer bw.Flush()
@@ -83,7 +98,7 @@ func filter(r io.Reader, w io.Writer, log func(...any)) error {
 		io.WriteString(bw, text)
 		if strings.HasPrefix(text, "```") {
 			filename := strings.TrimSpace(text[3:])
-			qr, err := os.Open(filename)
+			qr, err := open(filename)
 			if err != nil {
 				if !os.IsNotExist(err) {
 					return err
