@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 
 	"golang.org/x/text/transform"
@@ -196,7 +197,10 @@ func mains() error {
 	return nil
 }
 
+var version string
+
 func main() {
+	fmt.Fprintf(os.Stderr, "%s %s-%s-%s\n", os.Args[0], version, runtime.GOOS, runtime.GOARCH)
 	flag.Parse()
 	if err := mains(); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
