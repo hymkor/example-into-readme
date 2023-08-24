@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 
 	"golang.org/x/text/transform"
 )
@@ -75,6 +76,25 @@ func copyWithDetab(r io.Reader, newline string, w io.Writer) error {
 	return sc.Err()
 }
 
+func mergeInput(inList ...io.ReadCloser) io.ReadCloser {
+	pr, pw := io.Pipe()
+	var wg sync.WaitGroup
+
+	for _, in := range inList {
+		wg.Add(1)
+		go func(in1 io.ReadCloser) {
+			io.Copy(pw, in1)
+			in1.Close()
+			wg.Done()
+		}(in)
+	}
+	go func() {
+		wg.Wait()
+		pw.Close()
+	}()
+	return pr
+}
+
 func open(s string) (io.ReadCloser, error) {
 	if len(s) > 0 && s[len(s)-1] == '|' {
 		args := strings.Fields(s[:len(s)-1])
@@ -87,7 +107,7 @@ func open(s string) (io.ReadCloser, error) {
 		if err != nil {
 			return nil, err
 		}
-		return io.NopCloser(io.MultiReader(stdout, stderr)), cmd.Start()
+		return mergeInput(stdout, stderr), cmd.Start()
 	} else {
 		return os.Open(s)
 	}
