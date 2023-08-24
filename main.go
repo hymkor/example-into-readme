@@ -79,11 +79,15 @@ func open(s string) (io.ReadCloser, error) {
 	if len(s) > 0 && s[len(s)-1] == '|' {
 		args := strings.Fields(s[:len(s)-1])
 		cmd := exec.Command(args[0], args[1:]...)
-		fd, err := cmd.StdoutPipe()
+		stdout, err := cmd.StdoutPipe()
 		if err != nil {
 			return nil, err
 		}
-		return fd, cmd.Start()
+		stderr, err := cmd.StderrPipe()
+		if err != nil {
+			return nil, err
+		}
+		return io.NopCloser(io.MultiReader(stdout, stderr)), cmd.Start()
 	} else {
 		return os.Open(s)
 	}
