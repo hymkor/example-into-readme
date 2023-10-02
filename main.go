@@ -96,9 +96,17 @@ func open(s string) (io.ReadCloser, error) {
 			w.Close()
 		}()
 		return r, nil
-	} else {
-		return os.Open(s)
 	}
+	fd, err := os.Open(s)
+	if os.IsNotExist(err) {
+		// remove language text and retry
+		_, s, ok := strings.Cut(s, " ")
+		if !ok {
+			return nil, err
+		}
+		fd, err = os.Open(s)
+	}
+	return fd, err
 }
 
 func filter(r io.Reader, w io.Writer, log func(...any)) error {
