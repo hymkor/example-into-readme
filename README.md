@@ -29,6 +29,19 @@ Rename README.tmp to README.md
 
 When `*.go` is given as a filename, skip lines until `package` is found to ignore `//go:build`.
 
+Specify the language for codeblock
+----------------------------------
+
+On GitHub, the codeblock for some languages can not be judged with their extensions only. Then, you can write the name of languge before filename.
+
+    ```LANGNAME FILENAME
+    ```
+
+For example:
+
+    ```rust foo.rs
+    ```
+
 Quoting the output of the command
 -----
 
