@@ -53,7 +53,14 @@ Install
 
 Download the binary package from [Releases](https://github.com/hymkor/example-into-readme/releases) and extract the executable.
 
-### for scoop-installer
+
+### Use go install
+
+```
+go install github.com/hymkor/example-into-readme@latest
+```
+
+### Use the scoop-installer
 
 ```
 scoop install https://raw.githubusercontent.com/hymkor/example-into-readme/master/example-into-readme.json
