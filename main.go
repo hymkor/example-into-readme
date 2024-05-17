@@ -173,12 +173,12 @@ func conv(srcFile, dstFile string, log func(...any)) error {
 }
 
 var (
-	flagTarget = flag.String("target", "README.md", "Rewrite filename")
+	flagTarget = flag.String("target", "README.md", "Rewrite filename (Deprecated: remove `-target`)")
 	flagTemp   = flag.String("temporary", "{}.tmp", "Temporary filename ({} means original filepath)")
 	flagBackup = flag.String("backup", "{}~", "Backup filename ({} means original filepath)")
 )
 
-func mains() error {
+func mains(args []string) error {
 	const lockKey = "EXAMPLEINTOREADME"
 	_, ok := os.LookupEnv(lockKey)
 	if ok {
@@ -187,6 +187,9 @@ func mains() error {
 	os.Setenv(lockKey, "RUNNING")
 
 	md := *flagTarget
+	if len(args) >= 1 {
+		md = args[0]
+	}
 	tmp := strings.Replace(*flagTemp, "{}", md, 1)
 	bak := strings.Replace(*flagBackup, "{}", md, 1)
 
@@ -210,7 +213,7 @@ var version string
 func main() {
 	fmt.Fprintf(os.Stderr, "%s %s-%s-%s\n", os.Args[0], version, runtime.GOOS, runtime.GOARCH)
 	flag.Parse()
-	if err := mains(); err != nil {
+	if err := mains(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
