@@ -1,3 +1,7 @@
+v0.5.0
+======
+May 17, 2024
+
 - Change the default value of `-temporary` which was `README.tmp` to `{}.tmp`,  
   and the default value of `-backup` which was  `README.md~` to `{}~`.  
   (`{}` means the value of the target filename)
