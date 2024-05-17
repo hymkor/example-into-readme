@@ -46,11 +46,11 @@ func (g *goFilter) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err e
 	}
 }
 
-func readUntilQQQ(br *bufio.Reader, w io.Writer) error {
+func skipUntilPrefix(br *bufio.Reader, prefix string, w io.Writer) error {
 	for {
 		line, err := br.ReadString('\n')
 		io.WriteString(w, line)
-		if strings.HasPrefix(line, "```") {
+		if strings.HasPrefix(line, prefix) {
 			return nil
 		}
 		if err != nil {
@@ -124,7 +124,7 @@ func filter(r io.Reader, w io.Writer, log func(...any)) error {
 				if !os.IsNotExist(err) {
 					return err
 				}
-				if err = readUntilQQQ(br, bw); err != nil {
+				if err = skipUntilPrefix(br, "```", bw); err != nil {
 					return err
 				}
 				continue
@@ -140,7 +140,7 @@ func filter(r io.Reader, w io.Writer, log func(...any)) error {
 			}
 
 			qr.Close()
-			if err := readUntilQQQ(br, io.Discard); err != nil {
+			if err := skipUntilPrefix(br, "```", io.Discard); err != nil {
 				return err
 			}
 			bw.WriteString("```")
