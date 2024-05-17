@@ -174,8 +174,8 @@ func conv(srcFile, dstFile string, log func(...any)) error {
 
 var (
 	flagTarget = flag.String("target", "README.md", "Rewrite filename")
-	flagTemp   = flag.String("temporary", "README.tmp", "Temporary filename")
-	flagBackup = flag.String("backup", "README.md~", "Backup filename")
+	flagTemp   = flag.String("temporary", "{}.tmp", "Temporary filename ({} means original filepath)")
+	flagBackup = flag.String("backup", "{}~", "Backup filename ({} means original filepath)")
 )
 
 func mains() error {
@@ -187,8 +187,8 @@ func mains() error {
 	os.Setenv(lockKey, "RUNNING")
 
 	md := *flagTarget
-	tmp := *flagTemp
-	bak := *flagBackup
+	tmp := strings.Replace(*flagTemp, "{}", md, 1)
+	bak := strings.Replace(*flagBackup, "{}", md, 1)
 
 	fmt.Fprintln(os.Stderr, "Convert from", md, "to", tmp)
 	if err := conv(md, tmp, func(s ...any) { fmt.Fprintln(os.Stderr, s...) }); err != nil {
