@@ -151,16 +151,16 @@ func filter(r io.Reader, w io.Writer, log func(...any)) error {
 			log("Include", filename)
 		} else if m := rxMarker.FindStringSubmatch(text); m != nil {
 			if fd, err := os.Open(m[1]); err == nil {
-				log("Include", m[1])
-				io.Copy(bw, fd)
-				fd.Close()
-				bw.WriteString("<!-- -->")
-				skipUntilPrefix(br, "<!-- -->", io.Discard)
 				newline := "\n"
 				if strings.HasSuffix(text, "\r\n") {
 					newline = "\r\n"
 				}
+				io.Copy(bw, fd)
+				fd.Close()
+				bw.WriteString("<!-- -->")
+				skipUntilPrefix(br, "<!-- -->", io.Discard)
 				bw.WriteString(newline)
+				log("Include", m[1])
 			}
 		}
 		if errRead != nil {
