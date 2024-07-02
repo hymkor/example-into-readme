@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"regexp"
 	"runtime"
 	"strings"
 
@@ -109,6 +110,8 @@ func open(s string) (io.ReadCloser, error) {
 	return fd, err
 }
 
+var rxMarker = regexp.MustCompile(`^<!--\s*(\S+)\s*-->\s*$`)
+
 func filter(r io.Reader, w io.Writer, log func(...any)) error {
 	bw := bufio.NewWriter(w)
 	defer bw.Flush()
@@ -146,6 +149,19 @@ func filter(r io.Reader, w io.Writer, log func(...any)) error {
 			bw.WriteString("```")
 			bw.WriteString(newline)
 			log("Include", filename)
+		} else if m := rxMarker.FindStringSubmatch(text); m != nil {
+			if fd, err := os.Open(m[1]); err == nil {
+				log("Include", m[1])
+				io.Copy(bw, fd)
+				fd.Close()
+				bw.WriteString("<!-- -->")
+				skipUntilPrefix(br, "<!-- -->", io.Discard)
+				newline := "\n"
+				if strings.HasSuffix(text, "\r\n") {
+					newline = "\r\n"
+				}
+				bw.WriteString(newline)
+			}
 		}
 		if errRead != nil {
 			if errRead != io.EOF {
