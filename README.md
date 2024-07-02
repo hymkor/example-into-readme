@@ -48,6 +48,12 @@ Quoting the output of the command
     ```COMMANDNAME ARGS ... |
     ```
 
+Include other markdown
+----------------
+
+    <!-- example.md -->
+    <!-- -->
+
 Install
 -------
 
