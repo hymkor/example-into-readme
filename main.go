@@ -14,6 +14,8 @@ import (
 	"strings"
 
 	"golang.org/x/text/transform"
+
+	"github.com/hymkor/example-into-readme/outline"
 )
 
 type goFilter struct {
@@ -121,7 +123,7 @@ func open(s string) (io.ReadCloser, error) {
 
 var rxMarker = regexp.MustCompile(`^<!--\s*(\S+)\s*-->\s*$`)
 
-func filter(r io.Reader, w io.Writer, log func(...any)) error {
+func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any)) error {
 	bw := bufio.NewWriter(w)
 	defer bw.Flush()
 
@@ -161,11 +163,24 @@ func filter(r io.Reader, w io.Writer, log func(...any)) error {
 			bw.WriteString(newline)
 			log("Include", filename)
 		} else if m := rxMarker.FindStringSubmatch(text); m != nil {
-			if fd, err := os.Open(m[1]); err == nil {
-				newline := "\n"
-				if strings.HasSuffix(text, "\r\n") {
-					newline = "\r\n"
+			newline := "\n"
+			if strings.HasSuffix(text, "\r\n") {
+				newline = "\r\n"
+			}
+			if m[1] == "outline" {
+				bw.WriteString(newline)
+				for _, h := range headers {
+					for i := 1; i < h.Level; i++ {
+						bw.WriteString("    ")
+					}
+					fmt.Fprintf(bw, "- [%s](#%s)%s", h.Title, h.ID, newline)
 				}
+				bw.WriteString(newline)
+				bw.WriteString("<!-- -->")
+				bw.WriteString(newline)
+				skipUntilPrefix(br, "<!-- -->", io.Discard)
+				log("Make Outline")
+			} else if fd, err := os.Open(m[1]); err == nil {
 				io.Copy(bw, fd)
 				fd.Close()
 				bw.WriteString("<!-- -->")
@@ -190,13 +205,18 @@ func conv(srcFile, dstFile string, log func(...any)) error {
 	}
 	defer r.Close()
 
+	headers, err := outline.Make(srcFile)
+	if err != nil {
+		return err
+	}
+
 	w, err := os.Create(dstFile)
 	if err != nil {
 		return err
 	}
 	defer w.Close()
 
-	return filter(r, w, log)
+	return filter(r, w, headers, log)
 }
 
 var (
