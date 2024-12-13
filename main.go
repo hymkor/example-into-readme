@@ -63,6 +63,15 @@ func skipUntilPrefix(br *bufio.Reader, prefix string, w io.Writer) error {
 	}
 }
 
+func copyWithNoDetab(r io.Reader, newline string, w io.Writer) error {
+	sc := bufio.NewScanner(r)
+	for sc.Scan() {
+		io.WriteString(w, sc.Text())
+		io.WriteString(w, newline)
+	}
+	return sc.Err()
+}
+
 func copyWithDetab(r io.Reader, newline string, w io.Writer) error {
 	sc := bufio.NewScanner(r)
 	for sc.Scan() {
@@ -138,6 +147,8 @@ func filter(r io.Reader, w io.Writer, log func(...any)) error {
 			}
 			if strings.HasSuffix(filename, ".go") {
 				copyWithDetab(transform.NewReader(qr, &goFilter{}), newline, bw)
+			} else if strings.EqualFold(filename, "Makefile") {
+				copyWithNoDetab(qr, newline, bw)
 			} else {
 				copyWithDetab(qr, newline, bw)
 			}
