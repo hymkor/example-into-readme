@@ -1,3 +1,7 @@
+v0.6.0
+======
+Dec 13, 2024
+
 - Tabs are not expanded to spaces now when Makefile is quoted
 
 v0.5.0
