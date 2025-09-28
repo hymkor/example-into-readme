@@ -60,6 +60,12 @@ Quoting the output of the command
     ```COMMANDNAME ARGS ... |
     ```
 
+Outline generator
+-----------------
+
+    <!-- outline -->
+    <!-- -->
+
 Include other markdown
 ----------------
 
