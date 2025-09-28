@@ -1,6 +1,18 @@
 example-into-readme
 ===================
 
+<!-- outline -->
+
+- [example-into-readme](#example-into-readme)
+    - [Specify the language for codeblock](#specify-the-language-for-codeblock)
+    - [Quoting the output of the command](#quoting-the-output-of-the-command)
+    - [Include other markdown](#include-other-markdown)
+    - [Install](#install)
+        - [Use go install](#use-go-install)
+        - [Use the scoop-installer](#use-the-scoop-installer)
+
+<!-- -->
+
 This program inserts example-files into `README.md` at the code block in the current directory.
 
 `README.md` before running
