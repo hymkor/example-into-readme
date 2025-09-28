@@ -1,3 +1,6 @@
+- Support the outline generator
+    - It generates between `<!-- outline -->` and `<!-- -->`
+
 v0.6.0
 ======
 Dec 13, 2024
