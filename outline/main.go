@@ -69,10 +69,10 @@ func Make(fname string) ([]*Header, error) {
 		return nil, err
 	}
 	defer fd.Close()
-	return makeOutline(fd)
+	return FromReader(fd)
 }
 
-func makeOutline(r io.Reader) ([]*Header, error) {
+func FromReader(r io.Reader) ([]*Header, error) {
 	sc := bufio.NewScanner(r)
 	lastlast := ""
 	last := ""
