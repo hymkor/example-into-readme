@@ -174,12 +174,7 @@ func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any
 			}
 			if m[1] == "outline" {
 				bw.WriteString(newline)
-				for _, h := range headers {
-					for i := 1; i < h.Level; i++ {
-						bw.WriteString("    ")
-					}
-					fmt.Fprintf(bw, "- [%s](#%s)%s", h.Title, h.ID, newline)
-				}
+				outline.List(headers, "", newline, bw)
 				bw.WriteString(newline)
 				bw.WriteString("<!-- -->")
 				bw.WriteString(newline)
