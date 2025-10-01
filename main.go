@@ -126,7 +126,7 @@ func open(s string) (io.ReadCloser, error) {
 	return fd, err
 }
 
-var rxMarker = regexp.MustCompile(`^<!--\s*(\S+)\s*-->\s*$`)
+var rxMarker = regexp.MustCompile(`^<!--\s*(.*?)\s*-->\s*$`)
 
 func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any)) error {
 	bw := bufio.NewWriter(w)
@@ -182,7 +182,7 @@ func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any
 					return err
 				}
 				log("Make Outline")
-			} else if fd, err := os.Open(m[1]); err == nil {
+			} else if fd, err := open(m[1]); err == nil {
 				io.Copy(bw, fd)
 				fd.Close()
 				bw.WriteString("<!-- -->")
