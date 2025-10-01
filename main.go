@@ -49,18 +49,23 @@ func (g *goFilter) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err e
 	}
 }
 
-func skipUntilPrefix(br *bufio.Reader, prefix string, w io.Writer) error {
+var (
+	rxCodeBlock = regexp.MustCompile("^```")
+	rxComment   = regexp.MustCompile(`^<!--\s+-->`)
+)
+
+func skipUntil(br *bufio.Reader, rx *regexp.Regexp, w io.Writer) error {
 	for {
 		line, err := br.ReadString('\n')
 		io.WriteString(w, line)
-		if strings.HasPrefix(line, prefix) {
+		if rx.MatchString(line) {
 			return nil
 		}
 		if err != nil {
-			if err != io.EOF {
-				return err
+			if err == io.EOF {
+				return io.ErrUnexpectedEOF
 			}
-			return nil
+			return err
 		}
 	}
 }
@@ -138,7 +143,7 @@ func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any
 				if !os.IsNotExist(err) {
 					return err
 				}
-				if err = skipUntilPrefix(br, "```", bw); err != nil {
+				if err = skipUntil(br, rxCodeBlock, bw); err != nil {
 					return err
 				}
 				continue
@@ -156,7 +161,7 @@ func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any
 			}
 
 			qr.Close()
-			if err := skipUntilPrefix(br, "```", io.Discard); err != nil {
+			if err := skipUntil(br, rxCodeBlock, io.Discard); err != nil {
 				return err
 			}
 			bw.WriteString("```")
@@ -178,13 +183,17 @@ func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any
 				bw.WriteString(newline)
 				bw.WriteString("<!-- -->")
 				bw.WriteString(newline)
-				skipUntilPrefix(br, "<!-- -->", io.Discard)
+				if err := skipUntil(br, rxComment, io.Discard); err != nil {
+					return err
+				}
 				log("Make Outline")
 			} else if fd, err := os.Open(m[1]); err == nil {
 				io.Copy(bw, fd)
 				fd.Close()
 				bw.WriteString("<!-- -->")
-				skipUntilPrefix(br, "<!-- -->", io.Discard)
+				if err := skipUntil(br, rxComment, io.Discard); err != nil {
+					return err
+				}
 				bw.WriteString(newline)
 				log("Include", m[1])
 			}
