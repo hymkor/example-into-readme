@@ -1,3 +1,5 @@
+- Made the tool exit with an error if the closing line for an outline or code block replacement is missing.
+
 v0.7.0
 ======
 Sep 28, 2025
