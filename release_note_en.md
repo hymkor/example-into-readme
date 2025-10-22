@@ -1,3 +1,7 @@
+v0.8.0
+======
+Oct 22, 2025
+
 - When a line like `<!-- command-name args…| -->` is found, the tool now replaces the lines from the next line up to the nearest `<!-- -->` with the command’s output.
 
 v0.7.1
