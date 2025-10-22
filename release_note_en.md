@@ -1,3 +1,5 @@
+- When a line like `<!-- command-name args…| -->` is found, the tool now replaces the lines from the next line up to the nearest `<!-- -->` with the command’s output.
+
 v0.7.1
 ======
 Oct 2, 2025
