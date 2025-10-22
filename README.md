@@ -73,6 +73,12 @@ Include other markdown
     <!-- example.md -->
     <!-- -->
 
+Include command output
+----------------------
+
+    <!-- COMMANDNAME ARGS ... | -->
+    <!-- -->
+
 Install
 -------
 
