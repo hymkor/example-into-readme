@@ -1,6 +1,12 @@
 example-into-readme
 ===================
 
+<!-- badges.cmd | -->
+[![Go Test](https://github.com/hymkor/example-into-readme/actions/workflows/go.yml/badge.svg)](https://github.com/hymkor/example-into-readme/actions/workflows/go.yml)
+[![License](https://img.shields.io/badge/License-MIT-red)](https://github.com/hymkor/example-into-readme/blob/master/LICENSE)
+[![Go Reference](https://pkg.go.dev/badge/github.com/hymkor/example-into-readme.svg)](https://pkg.go.dev/github.com/hymkor/example-into-readme)
+<!-- -->
+
 <!-- outline -->
 
 - [example-into-readme](#example-into-readme)
@@ -8,6 +14,7 @@ example-into-readme
     - [Quoting the output of the command](#quoting-the-output-of-the-command)
     - [Outline generator](#outline-generator)
     - [Include other markdown](#include-other-markdown)
+    - [Include command output](#include-command-output)
     - [Install](#install)
         - [Use go install](#use-go-install)
         - [Use the scoop-installer](#use-the-scoop-installer)
