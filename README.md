@@ -10,78 +10,111 @@ example-into-readme
 <!-- outline -->
 
 - [example-into-readme](#example-into-readme)
-    - [Specify the language for codeblock](#specify-the-language-for-codeblock)
-    - [Quoting the output of the command](#quoting-the-output-of-the-command)
-    - [Outline generator](#outline-generator)
-    - [Include other markdown](#include-other-markdown)
-    - [Include command output](#include-command-output)
+    - [Overview](#overview)
+        - [Before running](#before-running)
+        - [After running](#after-running)
+    - [Usage examples](#usage-examples)
+        - [Include a file](#include-a-file)
+        - [Include command output](#include-command-output)
+        - [Include another markdown file](#include-another-markdown-file)
+        - [Specify the language for code blocks](#specify-the-language-for-code-blocks)
+        - [Quoting the output of commands](#quoting-the-output-of-commands)
+        - [Outline generator](#outline-generator)
+        - [Include other markdown files](#include-other-markdown-files)
+        - [Include command output](#include-command-output-1)
     - [Install](#install)
         - [Use go install](#use-go-install)
         - [Use the scoop-installer](#use-the-scoop-installer)
 
 <!-- -->
 
-This program inserts example-files into `README.md` at the code block in the current directory.
+Overview
+--------
 
-`README.md` before running
+**example-into-readme** automatically inserts example files or command outputs into your `README.md`.
+It helps you keep your documentation up-to-date — without manually copying and pasting code or results.
+
+This tool is meant to be used **locally** as a CLI helper, not as a GitHub Action.
+
+### Before running
 
     ```go.mod
     ```
 
-`README.md` after running
+### After running
 
     ```go.mod
     module github.com/hymkor/example-into-readme
     
     go 1.20
+    
+    require golang.org/x/text v0.8.0
     ```
 
-The info-string at the header of codeblocks has to have a filename to include the file.
-When a filename is not written, the block will not be changed.
+The program finds code blocks whose info-string contains a filename, then replaces the block’s content with the actual file content.
 
 ```
-$ ./example-into-readme.exe
+$ example-into-readme
 Convert from README.md to README.tmp
 Include go.mod
 Rename README.md to README.md~
 Rename README.tmp to README.md
 ```
 
-When `*.go` is given as a filename, skip lines until `package` is found to ignore `//go:build`.
+When the filename ends with `*.go`, it skips lines before `package` to ignore `//go:build` directives.
 
-Specify the language for codeblock
-----------------------------------
+Usage examples
+--------------
 
-On GitHub, the codeblock for some languages can not be judged with their extensions only. Then, you can write the name of languge before filename.
+### Include a file
 
-    ```LANGNAME FILENAME
+    ```go.mod
     ```
 
-For example:
+→ replaced with the actual contents of `go.mod`.
 
-    ```rust foo.rs
+### Include command output
+
+    ```go run example.go |
     ```
 
-Quoting the output of the command
------
+→ replaced with the result of running the command.
 
-    ```COMMANDNAME ARGS ... |
-    ```
-
-Outline generator
------------------
-
-    <!-- outline -->
-    <!-- -->
-
-Include other markdown
-----------------
+### Include another markdown file
 
     <!-- example.md -->
     <!-- -->
 
-Include command output
-----------------------
+→ replaced with the contents of `example.md`.
+
+### Specify the language for code blocks
+
+Some file extensions are not automatically recognized by GitHub’s syntax highlighting.
+You can specify the language name explicitly before the filename:
+
+    ```rust foo.rs
+    ```
+
+### Quoting the output of commands
+
+To embed command results, write the command followed by a `|`:
+
+    ```COMMANDNAME ARGS ... |
+    ```
+
+### Outline generator
+
+You can insert a markdown outline between these markers:
+
+    <!-- outline -->
+    <!-- -->
+
+### Include other markdown files
+
+    <!-- filename.md -->
+    <!-- -->
+
+### Include command output
 
     <!-- COMMANDNAME ARGS ... | -->
     <!-- -->
@@ -89,24 +122,23 @@ Include command output
 Install
 -------
 
-Download the binary package from [Releases](https://github.com/hymkor/example-into-readme/releases) and extract the executable.
-
+Download the binary from [Releases](https://github.com/hymkor/example-into-readme/releases) and extract the executable.
 
 ### Use go install
 
-```
+```cmd
 go install github.com/hymkor/example-into-readme@latest
 ```
 
 ### Use the scoop-installer
 
-```
+```cmd
 scoop install https://raw.githubusercontent.com/hymkor/example-into-readme/master/example-into-readme.json
 ```
 
 or
 
-```
+```cmd
 scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
 scoop install example-into-readme
 ```
