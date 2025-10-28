@@ -18,6 +18,12 @@ import (
 	"github.com/hymkor/example-into-readme/outline"
 )
 
+var (
+	rxCodeBlock = regexp.MustCompile("^```")
+	rxComment   = regexp.MustCompile(`^<!--\s+-->`)
+	rxMarker    = regexp.MustCompile(`^<!--\s*(.*?)\s*-->\s*$`)
+)
+
 type goFilter struct {
 	pass bool
 }
@@ -48,11 +54,6 @@ func (g *goFilter) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err e
 		src = src[newlinePos+1:]
 	}
 }
-
-var (
-	rxCodeBlock = regexp.MustCompile("^```")
-	rxComment   = regexp.MustCompile(`^<!--\s+-->`)
-)
 
 func skipUntil(br *bufio.Reader, rx *regexp.Regexp, w io.Writer) error {
 	for {
@@ -125,8 +126,6 @@ func open(s string) (io.ReadCloser, error) {
 	}
 	return fd, err
 }
-
-var rxMarker = regexp.MustCompile(`^<!--\s*(.*?)\s*-->\s*$`)
 
 func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any)) error {
 	bw := bufio.NewWriter(w)
