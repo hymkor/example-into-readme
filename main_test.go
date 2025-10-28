@@ -10,7 +10,7 @@ func TestFilterLF(t *testing.T) {
 	source := strings.NewReader("foo\n```testdata.txt\n```\n")
 	expect := "foo\n```testdata.txt\nhogehoge\n```\n"
 
-	err := filter(source, &output, func(...any) {})
+	err := filter(source, &output, nil, func(...any) {})
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -25,7 +25,7 @@ func TestFilterCRLF(t *testing.T) {
 	source := strings.NewReader("foo\r\n```testdata.txt\r\n```\r\n")
 	expect := "foo\r\n```testdata.txt\r\nhogehoge\r\n```\r\n"
 
-	err := filter(source, &output, func(...any) {})
+	err := filter(source, &output, nil, func(...any) {})
 	if err != nil {
 		t.Fatal(err.Error())
 	}
