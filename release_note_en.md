@@ -1,4 +1,5 @@
 - Fix: Incorrect handling of arguments enclosed in double quotes when embedding command output. (#1)
+- Adjust line endings in command output to match the line endings of the target Markdown. (#2)
 
 v0.8.0
 ======
