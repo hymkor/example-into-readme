@@ -1,3 +1,5 @@
+- Fix: Incorrect handling of arguments enclosed in double quotes when embedding command output. (#1)
+
 v0.8.0
 ======
 Oct 22, 2025
