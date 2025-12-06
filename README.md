@@ -23,8 +23,9 @@ example-into-readme
         - [Include other markdown files](#include-other-markdown-files)
         - [Include command output](#include-command-output-1)
     - [Install](#install)
-        - [Use go install](#use-go-install)
-        - [Use the scoop-installer](#use-the-scoop-installer)
+        - [Use "go install" (requires Go toolchain)](#use-go-install-requires-go-toolchain)
+        - [Use [eget] installer (cross-platform)"](#use-eget-installer-cross-platform)
+        - [Use [scoop]-installer (Windows only)](#use-scoop-installer-windows-only)
 
 <!-- -->
 
@@ -124,21 +125,35 @@ Install
 
 Download the binary from [Releases](https://github.com/hymkor/example-into-readme/releases) and extract the executable.
 
-### Use go install
+<!-- pwsh -Command "readme-install.ps1" | -->
 
-```cmd
+### Use "go install" (requires Go toolchain)
+
+```
 go install github.com/hymkor/example-into-readme@latest
 ```
 
-### Use the scoop-installer
+### Use [eget] installer (cross-platform)"
 
-```cmd
+```
+cd (YOUR-BIN-DIRECTORY)
+eget hymkor/example-into-readme
+```
+
+[eget]: https://github.com/zyedidia/eget
+
+### Use [scoop]-installer (Windows only)
+
+```
 scoop install https://raw.githubusercontent.com/hymkor/example-into-readme/master/example-into-readme.json
 ```
 
 or
 
-```cmd
+```
 scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
 scoop install example-into-readme
 ```
+
+[scoop]: https://scoop.sh/
+<!-- -->
