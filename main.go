@@ -207,8 +207,17 @@ func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any
 				}
 				log("Make Outline")
 			} else if fd, err := open(m[1]); err == nil {
-				io.Copy(bw, fd)
-				fd.Close()
+				sc := bufio.NewScanner(fd)
+				for sc.Scan() {
+					io.WriteString(bw, sc.Text())
+					io.WriteString(bw, newline)
+				}
+				if err := fd.Close(); err != nil {
+					return err
+				}
+				if err := sc.Err(); err != nil {
+					return err
+				}
 				bw.WriteString("<!-- -->")
 				if err := skipUntil(br, rxComment, io.Discard); err != nil {
 					return err
