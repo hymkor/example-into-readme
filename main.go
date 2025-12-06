@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"unicode/utf8"
 
 	"golang.org/x/text/transform"
 
@@ -94,9 +95,33 @@ func copyWithDetab(r io.Reader, newline string, w io.Writer) error {
 	return sc.Err()
 }
 
+func splitField(s string) (result []string) {
+	for len(s) > 0 {
+		for len(s) > 0 && strings.IndexByte(" \t\v\r\n", s[0]) >= 0 {
+			s = s[1:]
+		}
+		quote := false
+		var buffer strings.Builder
+		for len(s) > 0 {
+			c, siz := utf8.DecodeRuneInString(s)
+			if !quote && strings.ContainsRune(" \t\v\r\n", c) {
+				break
+			}
+			if c == '"' {
+				quote = !quote
+			} else {
+				buffer.WriteString(s[:siz])
+			}
+			s = s[siz:]
+		}
+		result = append(result, buffer.String())
+	}
+	return
+}
+
 func open(s string) (io.ReadCloser, error) {
 	if len(s) > 0 && s[len(s)-1] == '|' {
-		args := strings.Fields(s[:len(s)-1])
+		args := splitField(s[:len(s)-1])
 		cmd := exec.Command(args[0], args[1:]...)
 		r, w, err := os.Pipe()
 		if err != nil {

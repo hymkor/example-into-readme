@@ -34,3 +34,21 @@ func TestFilterCRLF(t *testing.T) {
 		t.Fatalf("expect `%s` but `%s`", expect, result)
 	}
 }
+
+func testSplitField(t *testing.T, source string, expect ...string) {
+	t.Helper()
+	result := splitField(source)
+	if len(expect) != len(result) {
+		t.Fatalf("%#v: len: expect %d, but %d", source, len(expect), len(result))
+	}
+	for i := range expect {
+		if expect[i] != result[i] {
+			t.Fatalf("%#v: [%d]: expect %#v, but %#v", source, i, expect[i], result[i])
+		}
+	}
+}
+
+func TestSplitField(t *testing.T) {
+	testSplitField(t, `foo bar  baz`, "foo", "bar", "baz")
+	testSplitField(t, `foo " bar " baz`, "foo", " bar ", "baz")
+}
