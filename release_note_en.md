@@ -1,6 +1,10 @@
 Release notes (English)
 =======================
 
+v0.8.1
+------
+Dec 7, 2025
+
 - Fix: Incorrect handling of arguments enclosed in double quotes when embedding command output. (#1)
 - Adjust line endings in command output to match the line endings of the target Markdown. (#2)
 
