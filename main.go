@@ -16,6 +16,7 @@ import (
 
 	"golang.org/x/text/transform"
 
+	"github.com/hymkor/example-into-readme/internal/realpath"
 	"github.com/hymkor/example-into-readme/outline"
 )
 
@@ -235,25 +236,30 @@ func filter(r io.Reader, w io.Writer, headers []*outline.Header, log func(...any
 	}
 }
 
-func conv(srcFile, dstFile string, log func(...any)) error {
+func conv(srcFile, dstFile string, log func(...any)) (string, error) {
 	r, err := os.Open(srcFile)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer r.Close()
 
+	realName, err := realpath.FromFile(r)
+	if err != nil {
+		return "", err
+	}
+
 	headers, err := outline.Make(srcFile)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	w, err := os.Create(dstFile)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer w.Close()
 
-	return filter(r, w, headers, log)
+	return realName, filter(r, w, headers, log)
 }
 
 var (
@@ -261,6 +267,10 @@ var (
 	flagTemp   = flag.String("temporary", "{}.tmp", "Temporary filename ({} means original filepath)")
 	flagBackup = flag.String("backup", "{}~", "Backup filename ({} means original filepath)")
 )
+
+func logToStderr(s ...any) {
+	fmt.Fprintln(os.Stderr, s...)
+}
 
 func mains(args []string) error {
 	const lockKey = "EXAMPLEINTOREADME"
@@ -275,12 +285,16 @@ func mains(args []string) error {
 		md = args[0]
 	}
 	tmp := strings.Replace(*flagTemp, "{}", md, 1)
-	bak := strings.Replace(*flagBackup, "{}", md, 1)
 
 	fmt.Fprintln(os.Stderr, "Convert from", md, "to", tmp)
-	if err := conv(md, tmp, func(s ...any) { fmt.Fprintln(os.Stderr, s...) }); err != nil {
+	var err error
+	md, err = conv(md, tmp, logToStderr)
+	if err != nil {
 		return err
 	}
+
+	bak := strings.Replace(*flagBackup, "{}", md, 1)
+
 	fmt.Fprintln(os.Stderr, "Rename", md, "to", bak)
 	if err := os.Rename(md, bak); err != nil {
 		return fmt.Errorf("rename `%s` to `%s`: %w", md, bak, err)

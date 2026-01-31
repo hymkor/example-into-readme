@@ -1,6 +1,8 @@
 Release notes (English)
 =======================
 
+- Fixed an issue where, when the target file was omitted, a file whose name differed from `README.md` only in letter case (e.g. `readme.md`) could be updated with its name changed to `README.md`. (#3)
+
 v0.8.1
 ------
 Dec 7, 2025
