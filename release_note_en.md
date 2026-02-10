@@ -1,6 +1,8 @@
 Release notes
 =============
 
+- Fix: outline generation broken when headers contained links (`[text](url)`); now only the link text is used (#6)
+
 v0.8.2
 ------
 Feb 3, 2026
