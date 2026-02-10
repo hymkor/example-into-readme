@@ -117,6 +117,8 @@ func FromReader(r io.Reader) ([]*Header, error) {
 	return headers, sc.Err()
 }
 
+var rxRemoveAnchor = regexp.MustCompile(`\[(.*?)\](\(.*?\))?`)
+
 func (h *Header) WriteTo(baseUrl string, w io.Writer) (int, error) {
 	n := 0
 	for i := 1; i < h.Level; i++ {
@@ -126,7 +128,8 @@ func (h *Header) WriteTo(baseUrl string, w io.Writer) (int, error) {
 			return n, err
 		}
 	}
-	_n, err := fmt.Fprintf(w, "- [%s](%s#%s)", h.Title, baseUrl, h.ID)
+	title := rxRemoveAnchor.ReplaceAllString(h.Title,"$1")
+	_n, err := fmt.Fprintf(w, "- [%s](%s#%s)", title, baseUrl, h.ID)
 	n += _n
 	return n, err
 }
