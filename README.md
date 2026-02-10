@@ -23,9 +23,9 @@ example-into-readme
         - [Include other markdown files](#include-other-markdown-files)
         - [Include command output](#include-command-output-1)
     - [Install](#install)
-        - [Use "go install" (requires Go toolchain)](#use-go-install-requires-go-toolchain)
-        - [Use [eget] installer (cross-platform)"](#use-eget-installer-cross-platform)
+        - [Use [eget] installer (cross-platform)](#use-eget-installer-cross-platform)
         - [Use [scoop]-installer (Windows only)](#use-scoop-installer-windows-only)
+        - [Use "go install" (requires Go toolchain)](#use-go-install-requires-go-toolchain)
 
 <!-- -->
 
@@ -127,15 +127,13 @@ Download the binary from [Releases](https://github.com/hymkor/example-into-readm
 
 <!-- pwsh -Command "readme-install.ps1" | -->
 
-### Use "go install" (requires Go toolchain)
+### Use [eget] installer (cross-platform)
 
-```
-go install github.com/hymkor/example-into-readme@latest
-```
+```sh
+brew install eget        # Unix-like systems
+# or
+scoop install eget       # Windows
 
-### Use [eget] installer (cross-platform)"
-
-```
 cd (YOUR-BIN-DIRECTORY)
 eget hymkor/example-into-readme
 ```
@@ -156,4 +154,12 @@ scoop install example-into-readme
 ```
 
 [scoop]: https://scoop.sh/
+
+### Use "go install" (requires Go toolchain)
+
+```
+go install github.com/hymkor/example-into-readme@latest
+```
+
+Note: `go install` places the executable in `$HOME/go/bin` or `$GOPATH/bin`, so you need to add this directory to your `$PATH` to run `zar`.
 <!-- -->
