@@ -1,0 +1,36 @@
+
+### Use [eget] installer (cross-platform)
+
+```sh
+brew install eget        # Unix-like systems
+# or
+scoop install eget       # Windows
+
+cd (YOUR-BIN-DIRECTORY)
+eget %[1]s/%[2]s
+```
+
+[eget]: https://github.com/zyedidia/eget
+
+### Use [scoop]-installer (Windows only)
+
+```
+scoop install https://raw.githubusercontent.com/%[1]s/%[2]s/master/%[2]s.json
+```
+
+or
+
+```
+scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
+scoop install %[2]s
+```
+
+[scoop]: https://scoop.sh/
+
+### Use "go install" (requires Go toolchain)
+
+```
+go install %[3]s%[5]s@latest
+```
+
+Note: `go install` places the executable in `$HOME/go/bin` or `$GOPATH/bin`, so you need to add this directory to your `$PATH` to run `%[2]s`.
