@@ -1,0 +1,36 @@
+
+### [eget] インストーラーを使う場合 (クロスプラットフォーム)
+
+```sh
+brew install eget        # Unix-like systems
+# or
+scoop install eget       # Windows
+
+cd (YOUR-BIN-DIRECTORY)
+eget %[1]s/%[2]s
+```
+
+[eget]: https://github.com/zyedidia/eget
+
+### [scoop] インストーラーを使う場合 (Windowsのみ)
+
+```
+scoop install https://raw.githubusercontent.com/%[1]s/%[2]s/master/%[2]s.json
+```
+
+もしくは
+
+```
+scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
+scoop install %[2]s
+```
+
+[scoop]: https://scoop.sh/
+
+### "go install" を使う場合 (要Go言語開発環境)
+
+```
+go install %[3]s%[5]s@latest
+```
+
+`go install` は `$HOME/go/bin` もしくは `$GOPATH/bin` へ実行ファイルを導入するので、`%[2]s` を実行するにはそのディレクトリを `$PATH` に追加する必要があります。
