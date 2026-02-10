@@ -1,7 +1,7 @@
 example-into-readme
 ===================
 
-<!-- pwsh -Command "badges.ps1" | -->
+<!-- go run ./cmd/badges/main.go | -->
 [![Go Test](https://github.com/hymkor/example-into-readme/actions/workflows/go.yml/badge.svg)](https://github.com/hymkor/example-into-readme/actions/workflows/go.yml)
 [![License](https://img.shields.io/badge/License-MIT-red)](https://github.com/hymkor/example-into-readme/blob/master/LICENSE)
 [![Go Reference](https://pkg.go.dev/badge/github.com/hymkor/example-into-readme.svg)](https://pkg.go.dev/github.com/hymkor/example-into-readme)
@@ -125,7 +125,7 @@ Install
 
 Download the binary from [Releases](https://github.com/hymkor/example-into-readme/releases) and extract the executable.
 
-<!-- pwsh -Command "readme-install.ps1" | -->
+<!-- go run ./cmd/how2install/main.go | -->
 
 ### Use [eget] installer (cross-platform)
 
@@ -161,5 +161,5 @@ scoop install example-into-readme
 go install github.com/hymkor/example-into-readme@latest
 ```
 
-Note: `go install` places the executable in `$HOME/go/bin` or `$GOPATH/bin`, so you need to add this directory to your `$PATH` to run `zar`.
+Note: `go install` places the executable in `$HOME/go/bin` or `$GOPATH/bin`, so you need to add this directory to your `$PATH` to run `example-into-readme`.
 <!-- -->
