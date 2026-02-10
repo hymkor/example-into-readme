@@ -23,8 +23,8 @@ example-into-readme
         - [Include other markdown files](#include-other-markdown-files)
         - [Include command output](#include-command-output-1)
     - [Install](#install)
-        - [Use [eget] installer (cross-platform)](#use-eget-installer-cross-platform)
-        - [Use [scoop]-installer (Windows only)](#use-scoop-installer-windows-only)
+        - [Use eget installer (cross-platform)](#use-eget-installer-cross-platform)
+        - [Use scoop-installer (Windows only)](#use-scoop-installer-windows-only)
         - [Use "go install" (requires Go toolchain)](#use-go-install-requires-go-toolchain)
 
 <!-- -->
