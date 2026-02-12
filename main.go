@@ -120,26 +120,38 @@ func splitField(s string) (result []string) {
 	return
 }
 
+func pOpen(s string, useStderr bool) (io.ReadCloser, error) {
+	args := splitField(s)
+	cmd := exec.Command(args[0], args[1:]...)
+	r, w, err := os.Pipe()
+	if err != nil {
+		return nil, err
+	}
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = w
+	if useStderr {
+		cmd.Stderr = w
+	}
+	err = cmd.Start()
+	if err != nil {
+		return r, err
+	}
+	go func() {
+		cmd.Wait()
+		w.Close()
+	}()
+	return r, nil
+}
+
 func open(s string) (io.ReadCloser, error) {
 	if len(s) > 0 && s[len(s)-1] == '|' {
-		args := splitField(s[:len(s)-1])
-		cmd := exec.Command(args[0], args[1:]...)
-		r, w, err := os.Pipe()
-		if err != nil {
-			return nil, err
-		}
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = w
-		cmd.Stderr = w
-		err = cmd.Start()
-		if err != nil {
-			return r, err
-		}
-		go func() {
-			cmd.Wait()
-			w.Close()
-		}()
-		return r, nil
+		return pOpen(s[:len(s)-1], true)
+	}
+	if strings.HasPrefix(s, "stdout:") {
+		return pOpen(strings.TrimSpace(s[len("stdout:"):]), false)
+	}
+	if strings.HasPrefix(s, "output:") {
+		return pOpen(strings.TrimSpace(s[len("output:"):]), true)
 	}
 	fd, err := os.Open(s)
 	if os.IsNotExist(err) {
