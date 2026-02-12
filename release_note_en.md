@@ -2,6 +2,7 @@ Release notes
 =============
 
 - Fix: outline generation broken when headers contained links (`[text](url)`); now only the link text is used (#6)
+- Add new directives: `stdout:` and `output:` (#7)
 
 v0.8.2
 ------
