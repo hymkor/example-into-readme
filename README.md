@@ -1,7 +1,7 @@
 example-into-readme
 ===================
 
-<!-- go run ./cmd/badges/main.go | -->
+<!-- stdout: go run ./cmd/badges/main.go -->
 [![Go Test](https://github.com/hymkor/example-into-readme/actions/workflows/go.yml/badge.svg)](https://github.com/hymkor/example-into-readme/actions/workflows/go.yml)
 [![License](https://img.shields.io/badge/License-MIT-red)](https://github.com/hymkor/example-into-readme/blob/master/LICENSE)
 [![Go Reference](https://pkg.go.dev/badge/github.com/hymkor/example-into-readme.svg)](https://pkg.go.dev/github.com/hymkor/example-into-readme)
@@ -79,7 +79,15 @@ Usage examples
     ```go run example.go |
     ```
 
-→ replaced with the result of running the command.
+    ```output: go run example.go
+    ```
+
+→ replaced with all output of running the command.
+
+    ```stdout: go run example.go
+    ```
+
+→ replaced with the standard output of running the command.
 
 ### Include another markdown file
 
@@ -125,7 +133,7 @@ Install
 
 Download the binary from [Releases](https://github.com/hymkor/example-into-readme/releases) and extract the executable.
 
-<!-- go run ./cmd/how2install/main.go | -->
+<!-- stdout: go run ./cmd/how2install/main.go -->
 
 ### Use [eget] installer (cross-platform)
 
