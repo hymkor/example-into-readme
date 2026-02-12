@@ -79,7 +79,15 @@ Usage examples
     ```go run example.go |
     ```
 
-→ replaced with the result of running the command.
+    ```output: go run example.go
+    ```
+
+→ replaced with all output of running the command.
+
+    ```stdout: go run example.go
+    ```
+
+→ replaced with the standard output of running the command.
 
 ### Include another markdown file
 
