@@ -17,7 +17,7 @@ all:
 	$(SET) "CGO_ENABLED=0" && go build $(GOOPT)
 
 _dist:
-	$(MAKE) all
+	$(SET) "CGO_ENABLED=0" && go build $(GOOPT)
 	zip $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip $(NAME)$(EXE)
 
 dist:
@@ -27,9 +27,9 @@ dist:
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _dist
 
 release:
-	pwsh -Command "latest-notes.ps1" | gh release create -d --notes-file - -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
+	$(go) run github.com/hymkor/latest-notes@master | gh release create -d --notes-file - -t $(version) $(version) $(wildcard $(name)-$(version)-*.zip)
 
 manifest:
-	make-scoop-manifest *-windows-*.zip > $(NAME).json
+	$(GO) run github.com/hymkor/make-scoop-manifest@master -all *-windows-*.zip > $(NAME).json
 
 .PHONY: dist _dist manifest all release manifest
