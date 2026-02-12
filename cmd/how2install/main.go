@@ -63,7 +63,7 @@ func mains(args []string) error {
 	if _, err := os.Stat(filepath.Join("cmd", mod.repo)); err == nil {
 		cmddir = "/cmd/" + mod.repo
 	}
-	if len(args) >= 1 && strings.EqualFold(args[0],"ja") {
+	if len(args) >= 1 && strings.EqualFold(args[0], "ja") {
 		fmt.Printf(jaText, mod.user, mod.repo, mod.module, mod.url, cmddir)
 	} else {
 		fmt.Printf(enText, mod.user, mod.repo, mod.module, mod.url, cmddir)

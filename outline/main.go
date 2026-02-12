@@ -128,7 +128,7 @@ func (h *Header) WriteTo(baseUrl string, w io.Writer) (int, error) {
 			return n, err
 		}
 	}
-	title := rxRemoveAnchor.ReplaceAllString(h.Title,"$1")
+	title := rxRemoveAnchor.ReplaceAllString(h.Title, "$1")
 	_n, err := fmt.Fprintf(w, "- [%s](%s#%s)", title, baseUrl, h.ID)
 	n += _n
 	return n, err
