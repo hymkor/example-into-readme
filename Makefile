@@ -27,7 +27,7 @@ dist:
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _dist
 
 release:
-	$(go) run github.com/hymkor/latest-notes@master | gh release create -d --notes-file - -t $(version) $(version) $(wildcard $(name)-$(version)-*.zip)
+	go run github.com/hymkor/latest-notes@master | gh release create -d --notes-file - -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
 
 manifest:
 	$(GO) run github.com/hymkor/make-scoop-manifest@master -all *-windows-*.zip > $(NAME).json
