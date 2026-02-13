@@ -40,7 +40,10 @@ func mains() error {
 	if _, err := os.Stat("LICENSE"); err == nil {
 		fmt.Printf("[![License](https://img.shields.io/badge/License-MIT-red)](https://%[1]s/blob/master/LICENSE)\n", url)
 	}
-	fmt.Printf("[![Go Reference](https://pkg.go.dev/badge/%[1]s.svg)](https://pkg.go.dev/%[1]s)", url)
+	fmt.Printf("[![Go Reference](https://pkg.go.dev/badge/%[1]s.svg)](https://pkg.go.dev/%[1]s)\n", url)
+
+	fmt.Printf("[![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://%s)\n", url)
+
 	return nil
 }
 
